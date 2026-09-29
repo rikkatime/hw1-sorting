@@ -4,6 +4,7 @@
 #   make run     세 정렬 비교 표 출력
 #   make test    유닛 테스트
 #   make data    측정값을 report/data/*.csv로 저장
+#   make heap-exp 힙 정렬 변형 실험 (보고서 4장)
 #   make charts  CSV로 그래프(PNG) 생성 — matplotlib 필요 (pip install matplotlib)
 #   make debug   디버그 심볼을 넣어 빌드 (VS Code의 F5가 쓴다)
 #   make clean   빌드 산출물 정리
@@ -14,7 +15,7 @@ CC ?= gcc
 CFLAGS ?= -std=c17 -Wall -Wextra -O2
 DEBUGFLAGS ?= -std=c17 -Wall -Wextra -g -O0
 
-.PHONY: all run run-c test test-c data charts debug clean
+.PHONY: all run run-c test test-c data charts heap-exp debug clean
 
 all: test
 
@@ -51,5 +52,11 @@ SORT_SRC = src/sort.c src/quickSort.c src/mergeSort.c src/heapSort.c
 tests/test_sort.out: tests/test_sort.c $(SORT_SRC) src/sort.h src/sortctx.h src/bench.c src/bench.h
 	$(CC) $(CFLAGS) -Isrc -o $@ tests/test_sort.c $(SORT_SRC) src/bench.c
 
+experiments/heapVariants.out: experiments/heapVariants.c $(SORT_SRC) src/bench.c src/sort.h src/sortctx.h src/bench.h
+	$(CC) $(CFLAGS) -Isrc -o $@ experiments/heapVariants.c $(SORT_SRC) src/bench.c
+
+heap-exp: experiments/heapVariants.out
+	@./experiments/heapVariants.out
+
 clean:
-	rm -f src/*.out tests/*.out
+	rm -f src/*.out tests/*.out experiments/*.out
